@@ -1,4 +1,4 @@
-function [KSp opts] = simulateUnmixing (optsin)
+function [KSp, opts] = simulateUnmixing (optsin)
 %This function generates uncorrelated latent response distributions and
 %simulates the process of imaging, followed by unmixing and generation of spatially
 %shuffled nulls from the imaging data.
@@ -137,8 +137,6 @@ xlabel('Z score'); ylabel('Counts')
 
 legend({'measured correlations', 'computed null', 'ground truth'});
 
-[~,KSp] = kstest2(CC_z(:), CCss_z(:))
-
-keyboard
+[~,KSp] = kstest2(CC_z(:), CCss_z(:));
 
 end
