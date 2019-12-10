@@ -2,7 +2,7 @@ function [KSp, opts] = simulateUnmixing (optsin)
 %This function generates uncorrelated latent response distributions and
 %simulates the process of imaging, followed by unmixing and generation of spatially
 %shuffled nulls from the imaging data.
-%This function was used to validate null distributions for our two-color imaging analyses
+%This function was used to validate generation of null distributions for our two-color imaging analyses
 
 %output:    KSp: the p-value of a two-sample KS test between the null and the measured Z-scored correlation distribution
 %           opts: the user-selected options
@@ -57,9 +57,9 @@ if opts.addGlobal
     B = B+G;
 end
 
-A = opts.bA.*A;
-B =opts.bB.*B;
-GT = [A(:) B(:)];
+A = opts.bA.*A; %Latent A channel
+B =opts.bB.*B;  %Latent B channel
+GT = [A(:) B(:)];   %Ground Truth for later comparison
 
 mix = opts.mix;
 MMgt = [1-mix(1),mix(1);mix(2),1-mix(2)];%ground truth mixing matrix
@@ -68,6 +68,8 @@ C = poissrnd(GT*MMgt);
 %mixing matrix used for recovery
 unmix = mix.*(rand(size(mix))+0.5); %simulate unmixing matrix errors of up to 50%
 MM = [1-unmix(1),unmix(1);unmix(2),1-unmix(2)];
+
+assert(all(MM(:)>0 & all(MM(:)<1)));
 
 y = C;
 switch opts.unmixHow
